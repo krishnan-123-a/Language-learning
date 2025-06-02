@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block head_extra %}
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 0;
+    margin: -2rem -2rem 2rem -2rem;
+    border-radius: 0 0 2rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-section h1 {
+    color: white;
+    background: none;
+    -webkit-text-fill-color: white;
+    margin-bottom: 1rem;
+    font-size: 3rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-section .lead {
+    color: rgba(255,255,255,0.9);
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.feature-card {
+    text-align: center;
+    padding: 2rem;
+    border-radius: 1rem;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    border: 1px solid #e5e7eb;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 2rem 0;
+        margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+    }
+
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+
+    .feature-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1>Welcome to LinguaLearn! 🌟</h1>
+            <p class="lead">Your journey to mastering new languages starts here. Explore our interactive courses and start learning today.</p>
+            <div style="margin-top: 2rem;">
+                <a class="btn btn-primary btn-lg" href="{{ url_for('courses') }}" role="button">🚀 Explore Courses</a>
+                {% if not current_user.is_authenticated %}
+                    <a class="btn btn-secondary btn-lg" href="{{ url_for('register') }}" role="button" style="margin-left: 1rem;">✨ Sign Up Free</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="feature-grid">
+        <div class="feature-card">
+            <span class="feature-icon">🎯</span>
+            <h3>Interactive Learning</h3>
+            <p>Engage with interactive lessons, quizzes, and real-time feedback to accelerate your language learning journey.</p>
+        </div>
+
+        <div class="feature-card">
+            <span class="feature-icon">📊</span>
+            <h3>Track Progress</h3>
+            <p>Monitor your learning progress with detailed analytics and personalized recommendations for improvement.</p>
+        </div>
+
+        <div class="feature-card">
+            <span class="feature-icon">🌍</span>
+            <h3>Multiple Languages</h3>
+            <p>Choose from Spanish, French, German, and more. Each course is designed by language experts.</p>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h2 style="text-align: center; margin-bottom: 2rem;">🌟 Featured Courses</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">🇪🇸 Spanish for Beginners</h3>
+                    <p class="card-text">Start your Spanish learning journey with our comprehensive beginner course. Learn essential vocabulary, grammar, and conversation skills.</p>
+                    <div style="margin-top: 1rem;">
+                        <span style="background: #ecfdf5; color: #065f46; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.875rem; font-weight: 500;">Beginner</span>
+                        <span style="background: #eff6ff; color: #1e40af; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.875rem; font-weight: 500; margin-left: 0.5rem;">12 Lessons</span>
+                    </div>
+                    <a href="{{ url_for('courses') }}" class="btn btn-primary" style="margin-top: 1rem;">Start Learning</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">🇫🇷 French Conversation Practice</h3>
+                    <p class="card-text">Improve your French speaking skills with interactive lessons and real-world conversation scenarios.</p>
+                    <div style="margin-top: 1rem;">
+                        <span style="background: #ecfdf5; color: #065f46; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.875rem; font-weight: 500;">Beginner</span>
+                        <span style="background: #eff6ff; color: #1e40af; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.875rem; font-weight: 500; margin-left: 0.5rem;">10 Lessons</span>
+                    </div>
+                    <a href="{{ url_for('courses') }}" class="btn btn-primary" style="margin-top: 1rem;">Start Learning</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

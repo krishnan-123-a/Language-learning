@@ -1,0 +1,12 @@
+Flask>=2.0
+Flask-SQLAlchemy>=2.5
+Flask-Login>=0.5
+Flask-WTF>=1.0
+Werkzeug>=2.0
+SQLAlchemy>=1.4
+psycopg2-binary # For PostgreSQL, if chosen later
+mysql-connector-python # For MySQL, if chosen later
+speech_recognition>=3.8
+reportlab>=3.6
+# PyJWT for JWT-based auth, if chosen over Flask-Login sessions
+PyJWT>=2.0

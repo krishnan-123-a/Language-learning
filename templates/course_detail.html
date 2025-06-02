@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.title if course else 'Course Details' }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    {% if course %}
+        <div class="row mb-4">
+            <div class="col-md-4">
+                {% if course.image_url %}
+                    <img src="{{ course.image_url }}" class="img-fluid rounded shadow-sm" alt="{{ course.title }}">
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/placeholder_course.png') }}" class="img-fluid rounded shadow-sm" alt="Placeholder Image">
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <h2>{{ course.title }}</h2>
+                <p class="text-muted">Language: {{ course.language }} | Level: {{ course.level }}</p>
+                <p>{{ course.description | safe if course.description else 'No detailed description provided.' }}</p>
+                {% if course.learning_objectives %}
+                    <h5>What you'll learn:</h5>
+                    <ul class="list-unstyled">
+                        {% for objective in course.learning_objectives.split('\n') %}
+                            {% if objective.strip() %}
+                                <li><i class="fas fa-check text-success me-2"></i>{{ objective.strip() }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {# Placeholder for enrollment button - to be added back later #}
+                {# <a href="#" class="btn btn-success mt-3">Enroll in this Course</a> #}
+            </div>
+        </div>
+
+        <h3 class="mb-3">Course Content</h3>
+        {% if modules %}
+            <div class="accordion" id="modulesAccordion">
+                {% for module in modules %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading{{ module.id }}">
+                        <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ module.id }}" aria-expanded="{% if loop.first %}true{% else %}false{% endif %}" aria-controls="collapse{{ module.id }}">
+                            <strong>Module {{ module.order }}: {{ module.title }}</strong>
+                        </button>
+                    </h2>
+                    <div id="collapse{{ module.id }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" aria-labelledby="heading{{ module.id }}" data-bs-parent="#modulesAccordion">
+                        <div class="accordion-body">
+                            {% if module.description %}
+                                <p class="text-muted fst-italic">{{ module.description }}</p>
+                            {% endif %}
+                            {% if module.lessons %}
+                                <ul class="list-group list-group-flush">
+                                    {% for lesson in module.lessons %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <i class="fas fa-book-open me-2 text-primary"></i>
+                                                <a href="{{ url_for('lesson_view', lesson_id=lesson.id) }}" class="text-decoration-none">Lesson {{ lesson.lesson_number }}: {{ lesson.title }}</a>
+                                            </div>
+                                            {% if lesson.estimated_duration %}
+                                                <span class="badge bg-light text-dark rounded-pill">{{ lesson.estimated_duration }}</span>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p>No lessons in this module yet.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No modules or lessons have been added to this course yet.</p>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-warning" role="alert">
+            <h2>Course Not Found</h2>
+            <p>The course you are looking for does not exist or could not be loaded.</p>
+            <a href="{{ url_for('courses') }}" class="btn btn-primary">Back to Courses</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

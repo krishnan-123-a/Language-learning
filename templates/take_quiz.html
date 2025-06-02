@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    {% if quiz and lesson and module and course %}
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('courses') }}">Courses</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('course_detail', course_id=course.id) }}">{{ course.title }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('course_detail', course_id=course.id) }}#heading{{ module.id }}">{{ module.title }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('lesson_view', lesson_id=lesson.id) }}">{{ lesson.title }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Quiz</li>
+            </ol>
+        </nav>
+
+        <h2 class="mb-3">Quiz: {{ lesson.title }}</h2>
+        
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5>{{ quiz.question }}</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('take_quiz', quiz_id=quiz.id) }}">
+                    {{ csrf_token_form_field() if csrf_token_form_field else '' }} {# Add CSRF token if using Flask-WTF forms globally #}
+                    
+                    {% if quiz.quiz_type == 'multiple_choice' and options %}
+                        <div class="mb-3">
+                            {% for option in options %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="selected_answer" id="option{{ loop.index }}" value="{{ option.strip() }}" required>
+                                <label class="form-check-label" for="option{{ loop.index }}">
+                                    {{ option.strip() }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% elif quiz.quiz_type == 'true_false' %}
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="selected_answer" id="option_true" value="True" required>
+                                <label class="form-check-label" for="option_true">
+                                    True
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="selected_answer" id="option_false" value="False" required>
+                                <label class="form-check-label" for="option_false">
+                                    False
+                                </label>
+                            </div>
+                        </div>
+                    {% elif quiz.quiz_type == 'short_answer' %}
+                        <div class="mb-3">
+                            <label for="short_answer_text" class="form-label">Your Answer:</label>
+                            <textarea class="form-control" id="short_answer_text" name="selected_answer" rows="3" required></textarea>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">This quiz type is not yet fully supported for display.</p>
+                    {% endif %}
+
+                    {% if quiz.quiz_type in ['multiple_choice', 'true_false', 'short_answer'] %}
+                        <button type="submit" class="btn btn-primary">Submit Answer</button>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ url_for('lesson_view', lesson_id=lesson.id) }}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-2"></i>Back to Lesson</a>
+        </div>
+
+    {% else %}
+        <div class="alert alert-danger" role="alert">
+            <h2>Quiz Not Found</h2>
+            <p>The quiz you are looking for does not exist or could not be loaded.</p>
+            <a href="{{ url_for('courses') }}" class="btn btn-primary">Back to Courses</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

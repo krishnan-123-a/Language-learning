@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}{{ lesson.title if lesson else 'Lesson' }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    {% if lesson and module and course %}
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('courses') }}">Courses</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('course_detail', course_id=course.id) }}">{{ course.title }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('course_detail', course_id=course.id) }}#heading{{ module.id }}">{{ module.title }}</a></li> {# Link to module in accordion #}
+                <li class="breadcrumb-item active" aria-current="page">{{ lesson.title }}</li>
+            </ol>
+        </nav>
+
+        <h2 class="mb-3">{{ lesson.title }}</h2>
+        {% if lesson.estimated_duration %}
+            <p class="text-muted"><i class="far fa-clock me-2"></i>Estimated duration: {{ lesson.estimated_duration }}</p>
+        {% endif %}
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                {% if lesson.video_url %}
+                <div class="lesson-video mb-4 ratio ratio-16x9">
+                    <iframe src="{{ lesson.video_url }}" title="{{ lesson.title }} Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                {% endif %}
+
+                <div class="lesson-content">
+                    <h4>Lesson Content:</h4>
+                    <hr>
+                    {{ lesson.content | safe }} {# Assuming content might contain HTML #}
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h4>Quiz for this Lesson:</h4>
+            {% if lesson.quizzes and lesson.quizzes|length > 0 %}
+                {% for quiz in lesson.quizzes %}
+                    <div class="card mt-2 mb-3 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Quiz: {{ quiz.question | truncate(50) }}</h5>
+                            <p class="card-text">{{ quiz.question }}</p>
+                            {# Quiz rendering logic will go here - e.g., form with options #}
+                            <a href="{{ url_for('take_quiz', quiz_id=quiz.id) }}" class="btn btn-primary">Start Quiz</a> {# Link to quiz attempt page #}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info" role="alert">
+                    No quiz available for this lesson yet.
+                </div>
+            {% endif %}
+        </div>
+        
+        {# Navigation to previous/next lesson could be added here #}
+        <div class="mt-4 d-flex justify-content-between">
+            <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-2"></i>Back to Course Modules</a>
+            {# Add Next/Previous lesson buttons if logic is implemented #}
+        </div>
+
+    {% else %}
+        <div class="alert alert-danger" role="alert">
+            <h2>Lesson Not Found</h2>
+            <p>The lesson you are looking for does not exist or could not be loaded.</p>
+            <a href="{{ url_for('courses') }}" class="btn btn-primary">Back to Courses</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

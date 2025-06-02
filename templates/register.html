@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block head_extra %}
+<style>
+.auth-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 0;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    padding: 2rem;
+    border: 1px solid #e5e7eb;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+    color: #6b7280;
+    font-size: 0.95rem;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 1.1rem;
+    z-index: 1;
+}
+
+.form-control-with-icon {
+    padding-left: 3rem !important;
+}
+
+.auth-submit {
+    width: 100%;
+    padding: 0.875rem;
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+    color: #6b7280;
+}
+
+.auth-footer a {
+    color: #2563eb;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    color: #1d4ed8;
+}
+
+.invalid-feedback {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: block;
+}
+
+.password-strength {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2>🎓 Join LinguaLearn!</h2>
+            <p class="auth-subtitle">Create your account and start learning languages today</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('register') }}">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+                {{ form.email.label(class="form-label") }}
+                <div style="position: relative;">
+                    <span class="form-icon">📧</span>
+                    {{ form.email(class="form-control form-control-with-icon", placeholder="Enter your email address") }}
+                </div>
+                {% if form.email.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.password.label(class="form-label") }}
+                <div style="position: relative;">
+                    <span class="form-icon">🔒</span>
+                    {{ form.password(class="form-control form-control-with-icon", placeholder="Choose a strong password") }}
+                </div>
+                <div class="password-strength">
+                    💡 Use at least 6 characters with a mix of letters and numbers
+                </div>
+                {% if form.password.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.password.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.confirm_password.label(class="form-label") }}
+                <div style="position: relative;">
+                    <span class="form-icon">🔐</span>
+                    {{ form.confirm_password(class="form-control form-control-with-icon", placeholder="Confirm your password") }}
+                </div>
+                {% if form.confirm_password.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.confirm_password.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            {{ form.submit(class="btn btn-primary auth-submit", value="🚀 Create Account") }}
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a href="{{ url_for('login') }}">Sign in here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

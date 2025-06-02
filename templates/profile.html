@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+    <h2>My Profile</h2>
+    {% if current_user.is_authenticated %}
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Welcome, {{ current_user.email }}!</h3>
+                <p><strong>Email:</strong> {{ current_user.email }}</p>
+                <p><strong>Chosen Language:</strong> {{ current_user.chosen_language if current_user.chosen_language else 'Not selected yet' }}</p>
+                
+                {# Placeholder for editing profile - e.g., a form to change chosen_language #}
+                <h4 class="mt-3">Update Profile</h4>
+                <form method="POST" action="{{ url_for('profile') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.chosen_language.label(class="form-label") }}
+                        {{ form.chosen_language(class="form-select form-control") }} {# form-select for Bootstrap 5 styling of select #}
+                        {% if form.chosen_language.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.chosen_language.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group mt-2">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+
+                <h4 class="mt-3">My Progress</h4>
+                <p><em>Progress tracking will be displayed here.</em></p>
+                {# Example: <p>Spanish - Beginner: 50% completed</p> #}
+            </div>
+        </div>
+    {% else %}
+        <p>Please <a href="{{ url_for('login') }}">login</a> to view your profile.</p>
+    {% endif %}
+{% endblock %}

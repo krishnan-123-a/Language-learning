@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}My Assignments & Quizzes{% endblock %}
+
+{% block content %}
+    <h2>My Assignments & Quizzes</h2>
+    {% if current_user.is_authenticated %}
+        <p>This section will show your pending and completed quizzes and assignments.</p>
+        
+        <h4 class="mt-3">Pending Items:</h4>
+        {# Example: Iterate through pending quizzes or assignments #}
+        {% if pending_items %}
+            <ul class="list-group">
+                {% for item in pending_items %}
+                    <li class="list-group-item">
+                        <a href="{{ url_for('lesson_view', lesson_id=item.lesson_id) if item.type == 'quiz' else '#' }}">
+                            {{ item.title }} ({{ item.type }})
+                        </a>
+                        - Due: {{ item.due_date if item.due_date else 'N/A' }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No pending assignments or quizzes.</p>
+        {% endif %}
+
+        <h4 class="mt-3">Completed Items:</h4>
+        {# Example: Iterate through completed quizzes or assignments #}
+        {% if completed_items %}
+            <ul class="list-group">
+                {% for item in completed_items %}
+                    <li class="list-group-item">
+                        {{ item.title }} ({{ item.type }}) - Score: {{ item.score if item.score else 'N/A' }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No completed assignments or quizzes yet.</p>
+        {% endif %}
+
+    {% else %}
+        <p>Please <a href="{{ url_for('login') }}">login</a> to view your assignments and quizzes.</p>
+    {% endif %}
+{% endblock %}
+

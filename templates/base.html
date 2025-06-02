@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Modern language learning platform with interactive courses, quizzes, and progress tracking.">
+    <meta name="theme-color" content="#2563eb">
+    <title>{% block title %}{{ title if title else 'Language Learning Platform' }}{% endblock %} - LinguaLearn</title>
+
+    <!-- Preload critical fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+    <div class="content-wrapper">
+        <nav class="navbar">
+            <div class="container">
+                <a class="navbar-brand" href="{{ url_for('index') }}">LinguaLearn</a>
+                <ul class="nav-links">
+                    <li><a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Home</a></li>
+                    <li><a href="{{ url_for('courses') }}" class="{% if request.endpoint == 'courses' or request.endpoint == 'course_detail' %}active{% endif %}">Courses</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('profile') }}" class="{% if request.endpoint == 'profile' %}active{% endif %}">Profile</a></li>
+                        <li><a href="{{ url_for('enrolled_courses') }}" class="{% if request.endpoint == 'enrolled_courses' %}active{% endif %}">My Courses</a></li>
+                        {# Placeholder for future forum link #}
+                        {# <li><a href="{{ url_for('forum') }}" class="{% if request.endpoint == 'forum' %}active{% endif %}">Forum</a></li> #}
+                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}" class="{% if request.endpoint == 'login' %}active{% endif %}">Login</a></li>
+                        <li><a href="{{ url_for('register') }}" class="{% if request.endpoint == 'register' %}active{% endif %}">Register</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('contact') }}" class="{% if request.endpoint == 'contact' %}active{% endif %}">Contact</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container page-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            {% block content %}
+            <!-- Page specific content will go here -->
+            {% endblock %}
+        </main>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; {{ current_year }} Language Learning Platform. All rights reserved.</p>
+        </div>
+    </footer>
+
+    {% block scripts %}
+    {# Add global JavaScript files here if needed later #}
+    {# <script src="{{ url_for('static', filename='js/main.js') }}"></script> #}
+    {% endblock %}
+</body>
+</html>
